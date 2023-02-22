@@ -10,7 +10,7 @@ class Settings:
 
         # Rocket settings
         self.ship_speed = 10
-        self.ship_left = 3
+        self.ship_left = 2
 
         # Bullet settings
         self.bullet_speed = 12.0
