@@ -113,6 +113,12 @@ class AllienInvasion:
         # If so, get rid of the bullet alnd the alien.
         collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
 
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points * len(aliens)
+            self.sb.prep_score()
+            self.sb.check_high_score()
+
     def _create_fleet(self):
         """Create the fleet of aliens."""
         # Create an alien and find the nubmer of aliens in a row.
@@ -209,6 +215,7 @@ class AllienInvasion:
             # Reset the game statistics.
             self.stats.reset_stats()
             self.stats.game_active = True
+            self.sb.prep_score()
             # Reset the game settings
             self.settings.initialize_dynamic_settings()
 
@@ -233,7 +240,7 @@ class AllienInvasion:
 
         # Draw the score information.
         self.sb.show_score()
-        
+
         # Draw the play button if the game is inactive
         if not self.stats.game_active:
             self.play_button.draw_button()
