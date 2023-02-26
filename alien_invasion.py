@@ -7,7 +7,9 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
+from scoreboard import Scoreboard
 from button import Button
+
 
 class AllienInvasion:
     """Overall class to manage game assets an behavior."""
@@ -24,6 +26,7 @@ class AllienInvasion:
 
         # Create an instance to store game statistics
         self.stats = GameStats(self)
+        self.sb = Scoreboard(self)
 
         self.ship = Ship(self)
 
@@ -228,6 +231,9 @@ class AllienInvasion:
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
 
+        # Draw the score information.
+        self.sb.show_score()
+        
         # Draw the play button if the game is inactive
         if not self.stats.game_active:
             self.play_button.draw_button()
