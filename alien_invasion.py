@@ -183,8 +183,9 @@ class AllienInvasion:
         """Respond to the ship being hit by an alien."""
         
         if self.stats.ships_left > 0:
-            # Decrement ship_left
+            # Decrement ship_left and update scoreboard
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
             # Pause.
             sleep(0.5)
             
@@ -221,6 +222,7 @@ class AllienInvasion:
             self.stats.game_active = True
             self.sb.prep_score()
             self.sb.prep_level()
+            self.sb.prep_ships()
             # Reset the game settings
             self.settings.initialize_dynamic_settings()
 
