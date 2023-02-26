@@ -97,6 +97,7 @@ class AllienInvasion:
             # Destroy existing bullets and create new fleet.
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
         # Get rid of bullets that have disappeared.
         for bullet in self.bullets.copy():
@@ -120,8 +121,8 @@ class AllienInvasion:
 
         # Determine the number of rows of aliuens that fit on the screen.
         ship_height = self.ship.rect.height
-        available_space_y = self.settings.screen_height - (3*alien_height) - ship_height
-        number_rows = available_space_y//(2*alien_height)
+        available_space_y = self.settings.screen_height - (2*alien_height) - ship_height
+        number_rows = available_space_y//(4*alien_height)
 
         # Create a full fleet of aliens.
         for row_number in range(number_rows):
@@ -205,6 +206,8 @@ class AllienInvasion:
             # Reset the game statistics.
             self.stats.reset_stats()
             self.stats.game_active = True
+            # Reset the game settings
+            self.settings.initialize_dynamic_settings()
 
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
