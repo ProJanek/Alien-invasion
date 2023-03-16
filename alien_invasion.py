@@ -9,6 +9,7 @@ from alien import Alien
 from game_stats import GameStats
 from scoreboard import Scoreboard
 from button import Button
+from life import Life
 
 
 class AllienInvasion:
@@ -19,9 +20,11 @@ class AllienInvasion:
         pygame.init()
         self.settings = Settings()
 
-        self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-        self.settings.screen_width = self.screen.get_rect().width
-        self.settings.screen_height = self.screen.get_rect().height  
+        # self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        # self.settings.screen_width = self.screen.get_rect().width
+        # self.settings.screen_height = self.screen.get_rect().height
+        self.screen = pygame.display.set_mode(
+            (self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Alien Invasion")
 
         # Create an instance to store game statistics
@@ -29,6 +32,7 @@ class AllienInvasion:
         self.sb = Scoreboard(self)
 
         self.ship = Ship(self)
+        self.life = Life(self)
 
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
@@ -37,7 +41,7 @@ class AllienInvasion:
 
         # Make the Play button.
         self.play_button = Button(self, "Play")
-    
+
     def run_game(self):
         """Start the main loop for the game."""
         while True:
@@ -98,14 +102,15 @@ class AllienInvasion:
 
         # Get rid of bullets that have disappeared.
         for bullet in self.bullets.copy():
-             if bullet.rect.bottom <=0:
+            if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
     def _check_bullet_alien_collisions(self):
         """Respond to bullet-alien collisions."""
-                # Check for anu bullets that have hit aliens.
+        # Check for anu bullets that have hit aliens.
         # If so, get rid of the bullet alnd the alien.
-        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        collisions = pygame.sprite.groupcollide(
+            self.bullets, self.aliens, True, True)
 
         if collisions:
             for aliens in collisions.values():
@@ -134,7 +139,8 @@ class AllienInvasion:
 
         # Determine the number of rows of aliuens that fit on the screen.
         ship_height = self.ship.rect.height
-        available_space_y = self.settings.screen_height - (2*alien_height) - ship_height
+        available_space_y = self.settings.screen_height - \
+            (2*alien_height) - ship_height
         number_rows = available_space_y//(4*alien_height)
 
         # Create a full fleet of aliens.
@@ -149,9 +155,9 @@ class AllienInvasion:
         alien_width, alien_height = alien.rect.size
         alien.x = alien_width + 2 * alien_width * alien_number
         alien.rect.x = alien.x
-        alien.rect.y = alien_height + 2* alien.rect.height * row_number
+        alien.rect.y = alien_height + 2 * alien.rect.height * row_number
         self.aliens.add(alien)
-    
+
     def _update_aliens(self):
         """
         Check if the fleet is at an egde,
@@ -181,14 +187,14 @@ class AllienInvasion:
 
     def _ship_hit(self):
         """Respond to the ship being hit by an alien."""
-        
-        if self.stats.ships_left > 0:
+
+        if self.stats.lives_left > 0:
             # Decrement ship_left and update scoreboard
-            self.stats.ships_left -= 1
-            self.sb.prep_ships()
+            self.stats.lives_left -= 1
+            self.sb.prep_life()
             # Pause.
             sleep(0.5)
-            
+
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
             self.bullets.empty()
@@ -203,10 +209,9 @@ class AllienInvasion:
             self.stats.game_active = False
             pygame.mouse.set_visible(True)
 
-
     def _check_aliens_bottom(self):
         """Check if any aliens have reached the bottom of the screen."""
-        screen_rect= self.screen.get_rect()
+        screen_rect = self.screen.get_rect()
         for alien in self.aliens.sprites():
             if alien.rect.bottom >= screen_rect.bottom:
                 # Treat this the same as if the ship got hit
@@ -222,7 +227,7 @@ class AllienInvasion:
             self.stats.game_active = True
             self.sb.prep_score()
             self.sb.prep_level()
-            self.sb.prep_ships()
+            self.sb.prep_life()
             # Reset the game settings
             self.settings.initialize_dynamic_settings()
 
@@ -232,7 +237,7 @@ class AllienInvasion:
 
             # Create a new fleet and center the ship.
             self._create_fleet()
-            self.ship.center_ship() 
+            self.ship.center_ship()
 
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
@@ -256,7 +261,7 @@ class AllienInvasion:
         pygame.display.flip()
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     # Make a game instance and run the game.
     ai = AllienInvasion()
     ai.run_game()
